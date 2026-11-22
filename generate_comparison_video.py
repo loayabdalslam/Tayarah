@@ -355,9 +355,13 @@ def render_frame(frame_idx):
     return np.array(img)[:, :, ::-1]
 
 def main():
+    import subprocess
+    import shutil
+
+    temp_raw = "temp_raw_benchmark.mp4"
     print(f"Generating {TOTAL_FRAMES} frames ({DURATION_SEC}s @ {FPS} FPS)...")
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(OUTPUT_PATH, fourcc, float(FPS), (WIDTH, HEIGHT))
+    out = cv2.VideoWriter(temp_raw, fourcc, float(FPS), (WIDTH, HEIGHT))
 
     for idx in range(TOTAL_FRAMES):
         frame = render_frame(idx)
@@ -366,8 +370,33 @@ def main():
             print(f"   Frame {idx+1}/{TOTAL_FRAMES} ({(idx+1)/TOTAL_FRAMES*100:.1f}%) rendered...")
 
     out.release()
-    file_size_mb = os.path.getsize(OUTPUT_PATH) / (1024 * 1024)
-    print(f"SUCCESS: Video generated at {OUTPUT_PATH} ({file_size_mb:.2f} MB)")
+
+    # Web-standard H.264 / AVC Encoding for 100% browser compatibility (Chrome, Edge, Safari, Firefox)
+    ffmpeg_exe = shutil.which("ffmpeg")
+    if ffmpeg_exe:
+        print("⚡ Encoding with FFmpeg (H.264 / YUV420p / +faststart for native web playback)...")
+        cmd = [
+            ffmpeg_exe, "-y", "-i", temp_raw,
+            "-c:v", "libx264", "-pix_fmt", "yuv420p",
+            "-preset", "medium", "-crf", "20",
+            "-movflags", "+faststart",
+            OUTPUT_PATH
+        ]
+        res = subprocess.run(cmd, capture_output=True, text=True)
+        if res.returncode == 0:
+            if os.path.exists(temp_raw):
+                os.remove(temp_raw)
+            sz_kb = os.path.getsize(OUTPUT_PATH) / 1024
+            print(f"✅ SUCCESS: Web-optimized video generated at {OUTPUT_PATH} ({sz_kb:.1f} KB)")
+            return
+        else:
+            print("FFmpeg encoding failed, falling back to raw video:", res.stderr)
+
+    if os.path.exists(OUTPUT_PATH):
+        os.remove(OUTPUT_PATH)
+    os.rename(temp_raw, OUTPUT_PATH)
+    sz_mb = os.path.getsize(OUTPUT_PATH) / (1024 * 1024)
+    print(f"SUCCESS: Raw video generated at {OUTPUT_PATH} ({sz_mb:.2f} MB)")
 
 if __name__ == "__main__":
     main()
