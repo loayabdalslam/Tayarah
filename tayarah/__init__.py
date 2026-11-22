@@ -4,14 +4,6 @@ Bypasses the LLM memory bandwidth bottleneck via racore/The1 Inductive World Mod
 and Single-Pass Vectorized Parallel Verification.
 """
 
-from tayarah.drafter import TayarahSymbolicDrafter
-from tayarah.gpu_engine import TayarahGPUEngine
-from tayarah.adapter import TayarahUniversalAdapter
-from tayarah.runtime import TayarahRuntime, SymbLLMRuntime
-from tayarah.engine_manager import EngineManager
-from tayarah.terminal import TayarahDualTerminal
-from tayarah.server.app import create_app
-
 __all__ = [
     "TayarahSymbolicDrafter",
     "TayarahGPUEngine",
@@ -20,5 +12,33 @@ __all__ = [
     "SymbLLMRuntime",
     "EngineManager",
     "TayarahDualTerminal",
+    "GemmaOllamaTerminal",
     "create_app"
 ]
+
+def __getattr__(name: str):
+    if name == "TayarahSymbolicDrafter":
+        from tayarah.drafter import TayarahSymbolicDrafter
+        return TayarahSymbolicDrafter
+    elif name == "TayarahGPUEngine":
+        from tayarah.gpu_engine import TayarahGPUEngine
+        return TayarahGPUEngine
+    elif name == "TayarahUniversalAdapter":
+        from tayarah.adapter import TayarahUniversalAdapter
+        return TayarahUniversalAdapter
+    elif name in ("TayarahRuntime", "SymbLLMRuntime"):
+        from tayarah.runtime import TayarahRuntime
+        return TayarahRuntime
+    elif name == "EngineManager":
+        from tayarah.engine_manager import EngineManager
+        return EngineManager
+    elif name == "TayarahDualTerminal":
+        from tayarah.terminal import TayarahDualTerminal
+        return TayarahDualTerminal
+    elif name == "GemmaOllamaTerminal":
+        from tayarah.gemma_terminal import GemmaOllamaTerminal
+        return GemmaOllamaTerminal
+    elif name == "create_app":
+        from tayarah.server.app import create_app
+        return create_app
+    raise AttributeError(f"module 'tayarah' has no attribute '{name}'")

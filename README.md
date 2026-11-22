@@ -200,9 +200,20 @@ Tayarah/
 
 ---
 
-## ⚡ Interactive Terminal Mode
+## ⚡ Interactive Terminal Modes
 
-Launch the terminal for interactive command-line chat:
+### 1. Dedicated Gemma 4 E4B (7.5B) Turbo Terminal (Ollama Engine)
+A specialized terminal dedicated specifically to running the local 4.97 GB **Gemma 4 E4B Q4_K_M GGUF** model using the native Ollama inference engine:
+```cmd
+gemma.bat
+```
+Or via command-line:
+```powershell
+python gemma_terminal.py
+```
+
+### 2. Tayarah Universal Multi-Model Terminal
+Interactive terminal with on-the-fly model switching (GPU Mach / CPU Turbo / Any Hugging Face model):
 ```powershell
 python tayarah_terminal.py
 ```

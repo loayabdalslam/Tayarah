@@ -19,11 +19,6 @@ for p in the1_dir_candidates:
         sys.path.insert(0, p)
         break
 
-try:
-    from the1.core import The1WorldModel
-except ImportError:
-    The1WorldModel = None
-
 class TayarahSymbolicDrafter:
     """
     Tayarah Symbolic Drafter (طيارة) - Powered by racore/The1
@@ -33,17 +28,7 @@ class TayarahSymbolicDrafter:
     """
     def __init__(self, vocab_size: int = 256000):
         self.vocab_size = vocab_size
-        self.world_model = None
-        if The1WorldModel is not None:
-            try:
-                self.world_model = The1WorldModel(
-                    population_size=20,
-                    generations=6,
-                    max_complexity=8,
-                    verify_with_lean=False
-                )
-            except Exception:
-                self.world_model = None
+        self._world_model = None
         self.equation_cache = {}
         self.executor = ThreadPoolExecutor(max_workers=2)
         self.active_tasks = set()
@@ -55,6 +40,21 @@ class TayarahSymbolicDrafter:
             "total_eval_time_us": 0.0
         }
 
+    @property
+    def world_model(self):
+        if self._world_model is None:
+            try:
+                from the1.core import The1WorldModel
+                self._world_model = The1WorldModel(
+                    population_size=20,
+                    generations=6,
+                    max_complexity=8,
+                    verify_with_lean=False
+                )
+            except Exception:
+                self._world_model = None
+        return self._world_model
+
     def _sanitize_token(self, val) -> int:
         try:
             tok = int(round(float(val)))
@@ -63,10 +63,11 @@ class TayarahSymbolicDrafter:
             return 0
 
     def _async_learn_law(self, obs_x: np.ndarray, obs_y: np.ndarray, diff_key: tuple):
-        if not self.world_model:
+        wm = self.world_model
+        if not wm:
             return
         try:
-            law = self.world_model.fit(
+            law = wm.fit(
                 X_train=obs_x.reshape(-1, 1),
                 y_train=obs_y,
                 var_names=["t"],
@@ -130,7 +131,7 @@ class TayarahSymbolicDrafter:
             return next_vals
 
         # 4. Asynchronous Law Induction via The1
-        if diff_key not in self.active_tasks and self.world_model is not None:
+        if diff_key not in self.active_tasks:
             self.active_tasks.add(diff_key)
             self.executor.submit(self._async_learn_law, obs_x, obs_y, diff_key)
 
