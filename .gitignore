@@ -1,0 +1,59 @@
+# ==========================================
+# Tayarah (طيارة) Git Ignore Configuration
+# ==========================================
+
+# 1. Heavy Model Weights and Large Binary Artifacts
+*.gguf
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.onnx
+*.tflite
+*.tar.gz
+*.zip
+*.7z
+
+# 2. Large Media Files (Videos)
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# 3. Local Model Caches & Hub Storage
+.cache/
+models/
+huggingface/
+checkpoints/
+
+# 4. The One Website (Explicitly Excluded)
+theone_website/
+the1_model/theone_website/
+the1_model/theone_website/**
+
+# 5. Python Bytecode & Environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+build/
+dist/
+*.egg-info/
+
+# 6. Logs and Diagnostics
+*.log
+ollama_out.log
+ollama_err.log
+gpu_test.log
+ollama_test.log
+ollama_test_out.log
+
+# 7. OS and Editor Files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp

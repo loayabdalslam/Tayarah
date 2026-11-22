@@ -1,0 +1,33 @@
+{
+  "baseline_tps": 8.45,
+  "results": [
+    {
+      "chunk_size": 24,
+      "draft_time_us": 2791.9,
+      "verify_time_ms": 815.26,
+      "effective_tps": 30.56,
+      "speedup": 3.62
+    },
+    {
+      "chunk_size": 48,
+      "draft_time_us": 254.3,
+      "verify_time_ms": 538.89,
+      "effective_tps": 90.88,
+      "speedup": 10.75
+    },
+    {
+      "chunk_size": 72,
+      "draft_time_us": 252.7,
+      "verify_time_ms": 530.17,
+      "effective_tps": 137.62,
+      "speedup": 16.28
+    },
+    {
+      "chunk_size": 100,
+      "draft_time_us": 251.0,
+      "verify_time_ms": 581.98,
+      "effective_tps": 173.47,
+      "speedup": 20.52
+    }
+  ]
+}

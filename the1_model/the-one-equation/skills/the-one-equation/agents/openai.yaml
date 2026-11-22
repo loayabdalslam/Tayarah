@@ -1,0 +1,4 @@
+interface:
+  display_name: "The one Equation"
+  short_description: "Discover multivariable and differential equations"
+  default_prompt: "Use $the-one-equation to discover candidate equations from my data, choose an appropriate regression or differential-equation mode, and report held-out errors and limits."

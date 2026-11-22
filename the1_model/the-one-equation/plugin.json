@@ -1,0 +1,21 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "the-one-equation",
+  "version": "2.0.0",
+  "description": "Discover candidate multivariable equations, ODE systems, grid PDEs and implicit polynomial relations from data using bounded sparse searches.",
+  "keywords": ["equations", "symbolic-regression", "differential-equations", "physics", "data-analysis"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "The one Equation",
+        "shortDescription": "Discover multivariable and differential equations",
+        "longDescription": "Find candidate equations from pasted data, tables and CSV files. Supports multivariable sparse regression, polynomial and nonlinear expression libraries, coupled ODEs of orders 1 through 4, scalar grid PDEs and implicit polynomial relations. Reports held-out errors, library limits and identifiability warnings. Numerical discovery requires Python, NumPy and SciPy in the host environment. No external account or API key is needed. Does not discover every possible equation or establish a unique physical law.",
+        "defaultPrompt": [
+          "Find an equation for these pairs: (1,3), (2,5), (3,7), (4,9).",
+          "Find a multivariable equation for my uploaded CSV and compare validation errors.",
+          "Discover differential equations from my time series, explain the derivative estimates and test on a held-out trajectory."
+        ]
+      }
+    }
+  }
+}

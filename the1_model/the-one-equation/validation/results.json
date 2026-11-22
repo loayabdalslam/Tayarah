@@ -1,0 +1,32 @@
+{
+  "plugin_version": "2.0.0",
+  "tests_run": 21,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "passed": true,
+  "scope": "Synthetic examples and input/expression checks; not all physics laws or arbitrary real datasets.",
+  "tests": [
+    "test_composite_fractional_and_periodic",
+    "test_csv_and_advanced_cli",
+    "test_domain_skip_not_row_removal",
+    "test_duplicate_input_groups",
+    "test_exponential_decay_ode",
+    "test_fourth_order_oscillator",
+    "test_heat_pde",
+    "test_ideal_gas_rational_term",
+    "test_implicit_circle",
+    "test_independent_ode_rollout",
+    "test_invalid_data_and_time",
+    "test_inverse_square_gravity",
+    "test_lorenz_coupled_ode",
+    "test_newton_force",
+    "test_noise",
+    "test_nonuniform_time_smoothing_rejected",
+    "test_original_nine_families",
+    "test_polynomial_degree_five",
+    "test_second_order_oscillator",
+    "test_security_no_python_execution",
+    "test_two_dimensional_mixed_pde"
+  ]
+}

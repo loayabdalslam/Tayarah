@@ -1,0 +1,21 @@
+{
+  "architectures": [
+    "The1ForSymbolicWorldModel"
+  ],
+  "crossover_rate": 0.65,
+  "dtype": "float32",
+  "generations": 20,
+  "max_complexity": 25,
+  "model_type": "the1",
+  "the1_version": "1.1.0",
+  "mutation_rate": 0.35,
+  "occam_weight": 0.01,
+  "population_size": 60,
+  "rational_snap_tol": 0.04,
+  "tournament_size": 3,
+  "transformers_version": "5.19.0",
+  "auto_map": {
+    "AutoConfig": "configuration_the1.The1Config",
+    "AutoModel": "modeling_the1.The1ForSymbolicWorldModel"
+  }
+}

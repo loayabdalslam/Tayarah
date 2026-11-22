@@ -1,0 +1,57 @@
+{
+  "summary": [
+    {
+      "test_name": "Case 1: Mathematical Progression & Dynamic Sequences",
+      "prompt": "Continue the numerical sequence: 10, 20, 30, 40, 50, 60,",
+      "baseline_speed": 9.82,
+      "symbllm_speed": 12.84,
+      "speedup_ratio": 1.31,
+      "baseline_time_ms": 3485.91,
+      "symbllm_time_ms": 2414.76,
+      "baseline_output": "70, 80, 90, 100, 110, 120, ?\n\n**",
+      "symbllm_output": "70,mr  రావ rm,0m uhn墓志 पोशा पोशा पोशा पोशा पोशा पोशा पोशा पोशा पोशा पोशा पोशा पोशा पोशा पोशा",
+      "acceptance_ratio": "67.7%",
+      "draft_latency": "4.258 microseconds"
+    },
+    {
+      "test_name": "Case 2: Structured Code & Iterative Functions",
+      "prompt": "Write Python array values for powers of two starting at 1: [1, 2, 4, 8, 16,",
+      "baseline_speed": 7.7,
+      "symbllm_speed": 7.46,
+      "speedup_ratio": 0.97,
+      "baseline_time_ms": 4380.04,
+      "symbllm_time_ms": 4020.86,
+      "baseline_output": "32, 64, 128, 256, 512]\n\n```python\n# Solution using",
+      "symbllm_output": "32,r రావ വന്നുallelujah 2>लैतरv состоялась реальности Lл%ই starting at 1: [1",
+      "acceptance_ratio": "53.3%",
+      "draft_latency": "3.845 microseconds"
+    },
+    {
+      "test_name": "Case 3: Structured Data Coordinates (Linear Manifold)",
+      "prompt": "Coordinates following y = 2*x + 1: (0, 1), (1, 3), (2, 5), (3, 7),",
+      "baseline_speed": 8.24,
+      "symbllm_speed": 5.73,
+      "speedup_ratio": 0.7,
+      "baseline_time_ms": 4293.47,
+      "symbllm_time_ms": 5235.11,
+      "baseline_output": "(4, 9).\n\nSummary:\nThe coordinates provided in the prompt are inconsistent.\nThe coordinates listed in the prompt are: (0",
+      "symbllm_output": "(4, 9)\n\n---\n\n### Final Structure\n\n---\n\n### Final Structure\n\n---\n\n### Final Structure\n\n---\n\n### Final Structure",
+      "acceptance_ratio": "0.0%",
+      "draft_latency": "3.845 microseconds"
+    },
+    {
+      "test_name": "Case 4: Multi-Step Scientific Reasoning",
+      "prompt": "Explain the laws of motion by Isaac Newton step by step: Step 1:",
+      "baseline_speed": 8.53,
+      "symbllm_speed": 4.69,
+      "speedup_ratio": 0.55,
+      "baseline_time_ms": 4308.91,
+      "symbllm_time_ms": 7683.79,
+      "baseline_output": "Inertia (The Law of Inertia). Step 2: Force and Acceleration (The Law of Acceleration). Step 3: Action-Reaction (The Law of Momentum).",
+      "symbllm_output": "Inertia (The laws of motion by Isaac Newton step by step: Step 1: Inertia (The laws of motion by Isaac Newton step by step: Step 1:",
+      "acceptance_ratio": "0.0%",
+      "draft_latency": "3.845 microseconds"
+    }
+  ],
+  "avg_speedup": 0.88
+}

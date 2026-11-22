@@ -1,0 +1,153 @@
+\documentclass[10pt,journal,compsoc]{IEEEtran}
+
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{cite}
+
+\begin{document}
+
+\title{The1: Inductive Neuro-Symbolic World Models for Extreme Few-Shot Natural Law Discovery}
+
+\author{Loaii~abdalslam%
+\thanks{Manuscript prepared October 2026. Code repository formatted for Hugging Face Hub under the MIT License.}}
+
+\markboth{IEEE Transactions on Pattern Analysis and Machine Intelligence,~Vol.~XX, No.~Y, October~2026}%
+{The1: Inductive Neuro-Symbolic World Models}
+
+\IEEEtitleabstractindextext{%
+\begin{abstract}
+Modern deep world models excel at dense high-dimensional observation synthesis but fail at epistemic law induction from sparse data. When presented with fewer than ten observation pairs ($N \le 10$), standard neural parameterizations overfit and diverge outside the training support, whereas human scientists extract universal invariants from a handful of measurements. We introduce \textbf{The1}, an inductive neuro-symbolic world model for extreme few-shot equation discovery that contains \emph{no named equation, no domain template and no law-specific constant}. The1 combines: (1) a typed, domain-agnostic expression grammar; (2) a portfolio of generic solvers---sparse additive regression, sparse log-linear products, free-exponent power laws, sparse rational functions with target transforms, and an evolutionary fallback; (3) validation-driven selection on unseen out-of-distribution data under Occam's Minimum Description Length principle; and (4) optional formal hypothesis verification in Lean~4 with Mathlib. On datasets of strictly eight observation pairs, The1 recovers all 16 canonical physics laws and all 54 discoverable laws of a 62-law mathematics corpus with exact structure, achieving $R^2_{\text{train}} = R^2_{\text{val}} = 1.0000$ at an average latency of 362.55~ms (physics) and a median of 225.58~ms (mathematics). Under measurement noise, all 54 discoverable mathematics laws remain solved at both 1\% and 3\%, with 96.3\% and 90.7\% structurally exact respectively. We provide a Hugging Face-ready pipeline, an interactive Gradio deployment, a cumulative law library, a large-data explorer, and a Lean~4 verification bridge.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Symbolic Regression, Neuro-Symbolic AI, World Models, Few-Shot Learning, AI for Science, Algorithmic Information Theory, Formal Verification.
+\end{IEEEkeywords}}
+
+\maketitle
+
+\section{Introduction}
+\IEEEPARstart{A}{rtificial} General Intelligence (AGI) requires agents that construct compact, causal and extrapolative world models rather than statistical interpolators. Contemporary world models---recurrent state-space models, diffusion models and transformer dynamics---require dense training corpora and offer no mechanistic, mathematically verifiable representation. In the extreme few-shot regime ($N \le 10$), high-capacity neural parameterizations overfit the training points while oscillating between them and diverging under extrapolation.
+
+Human scientific history demonstrates the opposite regime: Kepler inferred $T \propto a^{3/2}$ from a handful of orbital measurements, and Coulomb established the inverse-square law from fewer than a dozen torsion-balance readings. The1 targets this regime directly: it discovers closed-form governing equations from 4--10 observation pairs, validates them on withheld out-of-distribution manifolds, and optionally proves structural properties of the discovered law in Lean~4.
+
+Our contributions are: (i) a template-free search portfolio over a typed grammar; (ii) a validation-driven selection procedure that prefers unseen extrapolation and parsimony; (iii) a 62-law cross-domain mathematics corpus that tests general law induction beyond physics; and (iv) a Lean~4 bridge that turns emergent structural conjectures into machine-checkable theorems.
+
+\section{Mathematical Formulation}
+Let an unknown law be $y = f^*(\mathbf{x})$ with $\mathbf{x} \in \mathbb{R}^D$ and $y \in \mathbb{R}$. The learner receives
+\begin{equation}
+\mathcal{D}_{\text{train}} = \{(\mathbf{x}^{(i)}, y^{(i)})\}_{i=1}^N, \quad N \le 10,
+\end{equation}
+and must return $\hat{f} \in \mathcal{E}$ that fits the data, remains parsimonious, and generalizes on $\mathcal{D}_{\text{val}} \subset \mathcal{X}_{\text{OOD}}$.
+
+\subsection{Minimum Description Length Objective}
+Following Solomonoff induction, candidate laws are ranked by
+\begin{equation}
+\mathcal{L}_{\text{MDL}}(\hat{f}) = \text{NMSE}(\hat{f}, \mathcal{D}_{\text{train}}) + \alpha\,\mathcal{C}(\hat{f}),
+\end{equation}
+where NMSE is the scale-invariant normalized mean squared error and $\mathcal{C}(\hat{f})$ is the AST node complexity.
+
+\subsection{Sparse Log-Linear and Power-Law Solvers}
+For multiplicative laws $y = c\prod_{j=1}^D x_j^{p_j}$, taking logarithms gives
+\begin{equation}
+\ln |y| = \ln |c| + \sum_{j=1}^D p_j \ln |x_j|.
+\end{equation}
+The active support is not assumed: the solver scans singletons, enumerates bounded pairs and runs a BIC-scored beam search over support cardinalities. Exponents are fitted by least squares and reconstructed as low-complexity rationals by continued fractions (maximum denominator 24, 2\% relative tolerance). Both raw and snapped exponent vectors are retained as candidates, so a genuine non-rational exponent is never forced onto a rational grid. With exponents fixed, the coefficient is refitted in the original target space,
+\begin{equation}
+c^* = \frac{\sum_{i=1}^N y^{(i)} \prod_{j=1}^D (x_j^{(i)})^{\hat{p}_j}}{\sum_{i=1}^N \big(\prod_{j=1}^D (x_j^{(i)})^{\hat{p}_j}\big)^2},
+\end{equation}
+which removes the amplitude bias of the log transform under additive noise.
+
+\subsection{Rational Structure and Target Transforms}
+Non-monomial laws are not encoded as named motifs. A sparse rational solver enumerates numerator and denominator supports, fits coefficients jointly and homogenizes the denominator via singular-value decomposition. A transform layer retries every solver on transformed targets (identity, logarithm, square root, square, reciprocal) and maps the winner back to the original scale. Lorentz factors, refraction ratios and exponential decay therefore emerge from the same generic grammar as any other law.
+
+\subsection{Grammar-Wide Evolutionary Fallback}
+When no structured solver returns an exact fit, an evolutionary program searches the full typed grammar $\{+,-,\times,/,\wedge,\sqrt{\cdot},|\cdot|,\sin,\cos,\tan,\exp,\ln,\allowbreak \sinh,\cosh,\tanh,\mathrm{erf},\Gamma\}$ with tournament selection, subtree crossover, node mutation, elitism and a complexity cap. Each individual is evaluated through a fitted affine correction $y \approx a + b f(\mathbf{x})$, allowing numerical constants to emerge from data. Evolution terminates early once an exact fit is found.
+
+\section{Formal Hypothesis Verification in Lean~4}
+A law can fit held-out data and still be wrong outside the sampled manifold. Given a candidate law, The1 generates conjectures that are consequences of the discovered structure: axis values, even/odd symmetry, permutation invariance, homogeneity degree, positivity, and derivative rules for univariate laws. Symmetry conjectures are accepted only when a strict evaluator---which does not silently extend $\log$ or $\sqrt{\cdot}$ by absolute value---agrees on every sampled point.
+
+Each conjecture is translated into a theorem over $\mathbb{R}$ and assembled into a \texttt{LawVerification.lean} file with \texttt{import Mathlib}. Proofs use domain-appropriate tactics such as \texttt{ring\_nf}, \texttt{field\_simp}, \texttt{positivity}, \texttt{norm\_num}, \texttt{compute\_deriv} and \texttt{simp [deriv]}. Returned diagnostics are mapped back to individual hypotheses, yielding per-hypothesis statuses and an aggregate status of \texttt{verified}, \texttt{partial}, \texttt{error}, \texttt{unavailable} or \texttt{unsupported}. When no Lean toolchain is installed the complete source is still emitted, but every hypothesis is reported \texttt{unverified}; fitting never depends on verification availability.
+
+\section{Empirical Evaluation}
+\subsection{Protocol}
+The physics suite contains 16 canonical laws evaluated with $N=8$ training points and 60 unseen OOD validation points. The mathematics suite contains 62 laws generated from numerical reference implementations---no benchmark expression is injected into the search---with 54 discoverable laws and 8 deliberately compositional laws, evaluated under three regimes: $N=8$ clean, $N=16$ with 1\% noise, and $N=16$ with 3\% noise.
+
+\begin{table*}[t]
+\centering
+\caption{The1 benchmark across 16 laws of nature ($N=8$ training points, 60 unseen OOD points).}
+\label{tab:benchmark}
+\begin{tabular}{lllcccc}
+\toprule
+\textbf{Category} & \textbf{Natural Law} & \textbf{Ground Truth} & \textbf{Discovered Law} & \textbf{Train $R^2$} & \textbf{Val $R^2$} & \textbf{Latency (ms)} \\
+\midrule
+Classical Mechanics & Newton's Second Law & $F = m a$ & $F = a\,m$ & \textbf{1.0000} & \textbf{1.0000} & 351.92 \\
+Astrophysics & Universal Gravitation & $F_g = 6.674\!\times\!10^{-11}\frac{m_1 m_2}{r^2}$ & $6.674\!\times\!10^{-11}\frac{m_1 m_2}{r^2}$ & \textbf{1.0000} & \textbf{1.0000} & 301.90 \\
+Classical Mechanics & Normalized Gravitation & $F = \frac{m_1 m_2}{r^2}$ & $\frac{m_1 m_2}{r^2}$ & \textbf{1.0000} & \textbf{1.0000} & 655.71 \\
+Classical Mechanics & Kinetic Energy & $E_k = 0.5\,m v^2$ & $0.5\,m v^2$ & \textbf{1.0000} & \textbf{1.0000} & 342.96 \\
+Thermodynamics & Ideal Gas Law & $P = 8.314\frac{nT}{V}$ & $8.314\frac{Tn}{V}$ & \textbf{1.0000} & \textbf{1.0000} & 500.68 \\
+Electromagnetism & Coulomb's Law & $F_e = \frac{q_1 q_2}{r^2}$ & $\frac{q_1 q_2}{r^2}$ & \textbf{1.0000} & \textbf{1.0000} & 682.78 \\
+Relativity & Mass-Energy Equivalence & $E = 9m$ ($c=3$) & $9m$ & \textbf{1.0000} & \textbf{1.0000} & 97.26 \\
+Relativity & Lorentz Factor & $\gamma = \frac{1}{\sqrt{1-v^2}}$ & $\frac{1}{\sqrt{1-v^2}}$ & \textbf{1.0000} & \textbf{1.0000} & 597.67 \\
+Astrophysics & Kepler's Third Law & $T = 2a^{3/2}$ & $2a^{3/2}$ & \textbf{1.0000} & \textbf{1.0000} & 99.90 \\
+Classical Mechanics & Pendulum Period & $T = 2.006\sqrt{L}$ & $2.006\sqrt{|L|}$ & \textbf{1.0000} & \textbf{1.0000} & 105.24 \\
+Optics & Snell's Law & $n_2 = n_1\frac{\sin\theta_1}{\sin\theta_2}$ & $n_1\frac{\sin\theta_1}{\sin\theta_2}$ & \textbf{1.0000} & \textbf{1.0000} & 672.44 \\
+Thermodynamics & Stefan-Boltzmann & $j = 0.5\,T^4$ & $0.5\,T^4$ & \textbf{1.0000} & \textbf{1.0000} & 295.57 \\
+Nuclear Physics & Radioactive Decay & $N = N_0 e^{-\lambda t}$ & $N_0 e^{-\lambda t}$ & \textbf{1.0000} & \textbf{1.0000} & 445.50 \\
+Classical Mechanics & Hooke's Law & $F = -kx$ & $-kx$ & \textbf{1.0000} & \textbf{1.0000} & 160.61 \\
+Fluid Dynamics & Bernoulli Pressure & $q = 0.5\,\rho v^2$ & $0.5\,\rho v^2$ & \textbf{1.0000} & \textbf{1.0000} & 318.33 \\
+Wave Mechanics & Wave Speed & $v = f\lambda$ & $f\lambda$ & \textbf{1.0000} & \textbf{1.0000} & 172.36 \\
+\midrule
+\textbf{Mean} & — & — & — & \textbf{1.0000} & \textbf{1.0000} & \textbf{362.55} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Physics Results}
+All 16 laws are recovered exactly, with mean complexity 4.9 AST nodes and an average discovery time of 362.55~ms on a single CPU core, including validation, candidate fusion and symbolic simplification. Because the recovered models are structural laws rather than polynomial fits, their OOD $R^2$ is identical to ground truth.
+
+Ablations across $N \in \{4,6,8,10\}$ and noise levels $\sigma \in \{0\%,1\%,3\%\}$ show that noise-free discovery is exact from $N=6$ onwards. With only four observation pairs, OOD $R^2$ remains 0.980 under 1\% noise and 0.880 under 3\% noise; at $N=10$, 3\% noise still yields 0.931.
+
+\subsection{Cross-Domain Mathematics}
+Table~\ref{tab:math} reports the mathematics suite. At $N=8$ with clean data, all 54 discoverable laws are solved and structurally exact, with a median latency of 225.58~ms. With $N=16$, all 54 laws still cross the solve threshold at both 1\% and 3\% noise; 52/54 (96.3\%) remain structurally exact at 1\% and 49/54 (90.7\%) at 3\%, with median OOD $R^2 = 1.0000$ in every regime. The eight compositional tasks are harder (5/8 solved and exact at $N=8$; 5/8 solved at 1\% noise and 4/8 at 3\%), which is expected: nested compositions exercise the evolutionary fallback rather than the closed-form portfolio.
+
+\begin{table}[t]
+\centering
+\caption{Discoverable mathematics laws by category ($N=8$, noise-free).}
+\label{tab:math}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Category} & \textbf{Laws} & \textbf{Solve Rate} & \textbf{Mean OOD $R^2$} \\
+\midrule
+Algebra & 10 & 100\% & 1.0000 \\
+Trigonometry & 10 & 100\% & 1.0000 \\
+Exponential \& Logarithmic & 8 & 100\% & 1.0000 \\
+Geometry & 6 & 100\% & 1.0000 \\
+Hyperbolic Functions & 6 & 100\% & 1.0000 \\
+Linear Algebra & 4 & 100\% & 1.0000 \\
+Special Functions & 3 & 100\% & 1.0000 \\
+Calculus & 3 & 100\% & 1.0000 \\
+Probability & 2 & 100\% & 1.0000 \\
+Sequences \& Series & 2 & 100\% & 1.0000 \\
+\midrule
+\textbf{Total} & \textbf{54} & \textbf{100\%} & \textbf{1.0000} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Discussion and Conclusion}
+The1 shows that extreme few-shot law induction need not rely on named equations or domain templates. A typed grammar, a redundant portfolio of generic solvers, and validation-driven Occam selection recover exact laws across physics and ten branches of mathematics. The same engine accumulates discoveries in a persistent law library and can audit structural claims in Lean~4.
+
+Limitations remain. Deeply nested compositions depend on the evolutionary fallback and are the weakest benchmark group. The current implementation consumes point observations rather than temporal differential operators, so automated PDE discovery and active experiment design are future work. Lean verification requires a local Lean~4 and Mathlib toolchain and checks structural invariants, not uniqueness of the ground truth. The1 is released as an open-source, Hugging Face-ready framework at the intersection of AGI, neuro-symbolic AI and automated scientific discovery.
+
+\bibliographystyle{IEEEtran}
+\begin{thebibliography}{1}
+\bibitem{schmidt2009} M.~Schmidt and H.~Lipson, ``Distilling free-form natural laws from experimental data,'' \emph{Science}, vol. 324, no. 5923, pp. 81--85, 2009.
+\bibitem{udrescu2020} S.-M.~Udrescu and M.~Tegmark, ``AI Feynman: A physics-inspired method for symbolic regression,'' \emph{Science Advances}, vol. 6, no. 16, 2020.
+\bibitem{brunton2016} S.~L.~Brunton, J.~L.~Proctor, and J.~N.~Kutz, ``Discovering governing equations from data by sparse identification of nonlinear dynamical systems,'' \emph{PNAS}, 2016.
+\bibitem{cranmer2023} M.~Cranmer, ``Interpretable machine learning for science with PySR and SymbolicRegression.jl,'' arXiv:2305.01582, 2023.
+\end{thebibliography}
+
+\end{document}

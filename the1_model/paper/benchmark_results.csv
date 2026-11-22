@@ -1,0 +1,17 @@
+law_id,law_name,category,ground_truth,discovered,latex,n_train,noise_level,train_r2,val_r2,train_rmse,val_rmse,complexity,latency_ms
+newton_second,Newton's Second Law,Classical Mechanics,F = m * a,F = a*m,F = a m,8,0%,1.0,1.0,0.0,0.0,3,351.92227363586426
+gravitation,Universal Gravitation,Astrophysics,F_g = 6.674e-11 * m1 * m2 / (r^2),F_g = 6.674e-11*m1*m2/r**2,F_g = \frac{6.674 \cdot 10^{-11} m_{1} m_{2}}{r^{2}},8,0%,1.0,1.0,0.0,0.0,7,301.8946647644043
+gravitation_normalized,Normalized Gravitation,Classical Mechanics,F = m1 * m2 / (r^2),F = m1*m2/r**2,F = \frac{m_{1} m_{2}}{r^{2}},8,0%,1.0,1.0,0.0,0.0,6,655.707597732544
+kinetic_energy,Kinetic Energy,Classical Mechanics,E_k = 0.5 * m * (v^2),E_k = 0.5*m*v**2,E_k = 0.5 m v^{2},8,0%,1.0,1.0,0.0,0.0,5,342.9596424102783
+ideal_gas,Ideal Gas Law,Thermodynamics,P = 8.314 * n * T / V,P = 8.314*T*n/V,P = \frac{8.314 T n}{V},8,0%,1.0,1.0,1.4380373887290168e-12,2.142627452374608e-12,6,500.67806243896484
+coulomb,Coulomb's Electrostatic Law,Electromagnetism,F_e = q1 * q2 / (r^2),F_e = q1*q2/r**2,F_e = \frac{q_{1} q_{2}}{r^{2}},8,0%,1.0,1.0,0.0,0.0,6,682.7778816223145
+mass_energy,Mass-Energy Equivalence,Relativity,E = m * 9,E = 9*m,E = 9 m,8,0%,1.0,1.0,0.0,0.0,2,97.26476669311523
+lorentz_factor,Lorentz Factor (Time Dilation),Relativity,gamma = 1 / sqrt(1 - v^2),gamma = 1/sqrt(1 - v**2),gamma = \frac{1}{\sqrt{1 - v^{2}}},8,0%,1.0,1.0,0.0,0.0,6,597.6674556732178
+kepler_third,Kepler's Third Law,Astrophysics,T = 2 * a^(1.5),T = 2*a**(3/2),T = 2 a^{\frac{3}{2}},8,0%,1.0,1.0,0.0,0.0,4,99.90406036376953
+pendulum_period,Simple Pendulum Period,Classical Mechanics,T = 2.006 * sqrt(L),T = 2.00606668071065*sqrt(Abs(L)),T = 2.00606668071065 \sqrt{\left|{L}\right|},8,0%,1.0,1.0,3.802412560270631e-15,7.704446521161837e-15,5,105.24201393127441
+snells_law,Snell's Law of Refraction,Optics,n2 = n1 * sin(theta1) / sin(theta2),n2 = n1*sin(theta1)/sin(theta2),n2 = \frac{n_{1} \sin{\left(\theta_{1} \right)}}{\sin{\left(\theta_{2} \right)}},8,0%,1.0,1.0,0.0,2.749530325049722e-16,7,672.438383102417
+stefan_boltzmann,Stefan-Boltzmann Radiation Law,Thermodynamics,j = 0.5 * (T^4),j = 0.5*T**4,j = 0.5 T^{4},8,0%,1.0,1.0,0.0,0.0,3,295.5653667449951
+radioactive_decay,Radioactive Decay,Nuclear Physics,N = N0 * exp(-lambda_const * t),N = N0*exp(-lambda_const*t),N = N_{0} e^{- \lambda_{const} t},8,0%,1.0,1.0,0.0,0.0,6,445.50275802612305
+hooke_law,Hooke's Law of Elasticity,Classical Mechanics,F = -k * x,F = -k*x,F = - k x,8,0%,1.0,1.0,0.0,0.0,4,160.60972213745117
+bernoulli_pressure,Bernoulli's Dynamic Pressure,Fluid Dynamics,q = 0.5 * rho * (v^2),q = 0.5*rho*v**2,q = 0.5 \rho v^{2},8,0%,1.0,1.0,0.0,0.0,5,318.328857421875
+wave_speed,Wave Dispersion Velocity,Wave Mechanics,v = f * lambda,v = f*lambda,v = f \lambda,8,0%,1.0,1.0,0.0,0.0,3,172.35875129699707
