@@ -1,8 +1,7 @@
-from tayarah_terminal import TayarahTerminal, SymbLLMTerminalApp if "SymbLLMTerminalApp" in locals() else TayarahTerminal
-
-# Alias for backwards compatibility
-SymbLLMTerminalApp = TayarahTerminal
+"""
+Legacy alias for tayarah_terminal
+"""
+from tayarah.terminal import main
 
 if __name__ == "__main__":
-    app = TayarahTerminal()
-    app.run()
+    main()

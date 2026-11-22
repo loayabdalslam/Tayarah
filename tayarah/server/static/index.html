@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✈️ Tayarah (طيارة) — Mach-Speed LLM Runtime Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --card-bg: rgba(18, 24, 38, 0.85);
+      --card-border: rgba(56, 189, 248, 0.18);
+      --accent-blue: #0284c7;
+      --accent-cyan: #38bdf8;
+      --accent-green: #10b981;
+      --accent-purple: #a855f7;
+      --accent-yellow: #f59e0b;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(2, 132, 199, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 75%, rgba(168, 85, 247, 0.12) 0%, transparent 40%);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      border-bottom: 1px solid var(--card-border);
+      background: rgba(11, 15, 25, 0.7);
+      backdrop-filter: blur(12px);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-icon {
+      font-size: 2rem;
+      filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.6));
+    }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 1.4rem;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff 30%, var(--accent-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+    }
+
+    .header-pills {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 9999px;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.8rem;
+      font-family: 'Fira Code', monospace;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .pill-green {
+      color: #34d399;
+      border-color: rgba(52, 211, 153, 0.3);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .pill-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    main {
+      flex: 1;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1rem;
+      backdrop-filter: blur(16px);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--accent-cyan);
+    }
+
+    /* Telemetry HUD */
+    .telemetry-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      grid-column: 1 / -1;
+    }
+
+    .metric-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .metric-val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      font-family: 'Fira Code', monospace;
+      color: #38bdf8;
+      line-height: 1.2;
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.25rem;
+    }
+
+    /* Playground */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    textarea, input, select {
+      background: rgba(11, 15, 25, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    textarea:focus, select:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .chip-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .chip {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 9999px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+
+    .chip:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    .action-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .output-box {
+      flex: 1;
+      background: rgba(11, 15, 25, 0.95);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      overflow-y: auto;
+      max-height: 480px;
+      min-height: 200px;
+      position: relative;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 1.2em;
+      background: var(--accent-cyan);
+      vertical-align: text-bottom;
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .output-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: 'Fira Code', monospace;
+    }
+
+    /* Tabs & Code Blocks */
+    .tab-header {
+      display: flex;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 1rem;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--accent-cyan);
+      border-bottom-color: var(--accent-cyan);
+    }
+
+    pre code {
+      display: block;
+      background: rgba(11, 15, 25, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+      overflow-x: auto;
+    }
+
+    .copy-btn {
+      position: relative;
+      float: right;
+      top: -2.8rem;
+      right: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text-muted);
+      border-radius: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">✈️</div>
+      <div>
+        <div class="brand-title">TAYARAH (طيارة)</div>
+        <div class="brand-sub">Mach-Speed Neuro-Symbolic Streaming Runtime</div>
+      </div>
+    </div>
+    <div class="header-pills">
+      <div class="pill pill-green">
+        <span class="pill-pulse"></span>
+        <span id="endpointUrl">http://127.0.0.1:11435</span>
+      </div>
+      <div class="pill" id="modeBadge">
+        ⚡ GPU MACH (CUDA 12.6)
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Telemetry Strip -->
+    <div class="telemetry-strip">
+      <div class="metric-card">
+        <div class="metric-val" id="tpsGauge">0.0</div>
+        <div class="metric-label">Live Tokens / Sec</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val" id="peakTps">1,043.5</div>
+        <div class="metric-label">Peak Verified Speed</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val" id="tokenCounter">0</div>
+        <div class="metric-label">Tokens Emitted</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val" style="color: #a855f7;">&lt; 250 µs</div>
+        <div class="metric-label">The1 Drafter Latency</div>
+      </div>
+    </div>
+
+    <!-- Playground -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🚀 Live Interactive Streaming Playground</div>
+        <select id="modelSelect">
+          <option value="tayarah">tayarah (Default Mach Speculative Core)</option>
+          <option value="tayarah-gpu">tayarah-gpu (Qwen 2.5 Coder 0.5B - 1,043 tok/s)</option>
+          <option value="tayarah-cpu">tayarah-cpu (Gemma 4 E4B 7.5B - 173 tok/s)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="promptInput">Prompt</label>
+        <textarea id="promptInput" placeholder="Enter your prompt here (e.g. Write a fast Python matrix multiplier)...">Why is the Tayarah runtime able to break the LLM memory bandwidth bottleneck?</textarea>
+      </div>
+
+      <div class="chip-container">
+        <span class="chip" onclick="setPrompt('Explain how Tayarah uses racore/The1 symbolic induction to extrapolate tokens in microseconds.')">✈️ The1 Induction</span>
+        <span class="chip" onclick="setPrompt('Write a lightning-fast parallel Quicksort algorithm in Python.')">⚡ Fast Quicksort</span>
+        <span class="chip" onclick="setPrompt('Compare DRAM memory bandwidth bottlenecks in standard autoregression vs parallel batch verification.')">🔬 DRAM Physics</span>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-primary" id="btnGenerate" onclick="startGeneration()">
+          <span>⚡ Fly (Stream Real-Time)</span>
+        </button>
+        <button class="btn" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);" id="btnStop" onclick="stopGeneration()" disabled>
+          <span>⏹ Stop</span>
+        </button>
+      </div>
+
+      <div class="output-box" id="outputBox">
+        <span id="streamContent">Click 'Fly' to initiate real-time streaming with live token telemetry...</span><span class="cursor" id="streamCursor" style="display: none;"></span>
+      </div>
+
+      <div class="output-footer">
+        <span id="footerTokens">Tokens: 0</span>
+        <span id="footerLatency">Latency: 0 ms</span>
+        <span id="footerTps">Speed: 0.00 tok/s</span>
+      </div>
+    </div>
+
+    <!-- Integration Hub -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🌐 Native Ollama & vLLM API Access</div>
+      </div>
+
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+        Tayarah runs transparently as a drop-in replacement for both Ollama and vLLM / OpenAI endpoints.
+      </p>
+
+      <div class="tab-header">
+        <button class="tab-btn active" onclick="switchTab('ollama')">Ollama</button>
+        <button class="tab-btn" onclick="switchTab('vllm')">vLLM / OpenAI</button>
+        <button class="tab-btn" onclick="switchTab('python')">Python SDK</button>
+      </div>
+
+      <div id="tab-ollama" class="tab-content">
+        <pre><code># Stream via Ollama API
+curl -N http://127.0.0.1:11435/api/generate \
+  -d '{
+    "model": "tayarah",
+    "prompt": "Hello Tayarah!",
+    "stream": true
+  }'</code></pre>
+      </div>
+
+      <div id="tab-vllm" class="tab-content" style="display: none;">
+        <pre><code># Stream via vLLM / OpenAI SSE API
+curl -N http://127.0.0.1:11435/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "tayarah",
+    "messages": [{"role": "user", "content": "Hi"}],
+    "stream": true
+  }'</code></pre>
+      </div>
+
+      <div id="tab-python" class="tab-content" style="display: none;">
+        <pre><code>from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://127.0.0.1:11435/v1",
+    api_key="tayarah"
+)
+
+stream = client.chat.completions.create(
+    model="tayarah",
+    messages=[{"role": "user", "content": "Fly fast!"}],
+    stream=True
+)
+
+for chunk in stream:
+    print(chunk.choices[0].delta.content or "", end="", flush=True)</code></pre>
+      </div>
+
+      <div style="margin-top: 1.5rem; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6;">
+        <p><strong>Available Endpoints:</strong></p>
+        <ul style="padding-left: 1.2rem; margin-top: 0.4rem;">
+          <li><code>POST /api/generate</code> — Ollama Streaming NDJSON</li>
+          <li><code>POST /api/chat</code> — Ollama Chat NDJSON</li>
+          <li><code>POST /v1/chat/completions</code> — OpenAI Server-Sent Events</li>
+          <li><code>GET /v1/models</code> — Model Catalog</li>
+          <li><code>GET /api/tags</code> — Ollama Tags</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let abortController = null;
+    let tokenCount = 0;
+    let startTime = 0;
+
+    function setPrompt(text) {
+      document.getElementById('promptInput').value = text;
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tab).style.display = 'block';
+    }
+
+    async function startGeneration() {
+      const prompt = document.getElementById('promptInput').value.trim();
+      const model = document.getElementById('modelSelect').value;
+      if (!prompt) return;
+
+      const outputBox = document.getElementById('streamContent');
+      const cursor = document.getElementById('streamCursor');
+      const btnGen = document.getElementById('btnGenerate');
+      const btnStop = document.getElementById('btnStop');
+
+      outputBox.textContent = '';
+      cursor.style.display = 'inline-block';
+      btnGen.disabled = true;
+      btnStop.disabled = false;
+
+      abortController = new AbortController();
+      tokenCount = 0;
+      startTime = performance.now();
+
+      try {
+        const response = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: model,
+            prompt: prompt,
+            stream: true
+          }),
+          signal: abortController.signal
+        });
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop(); // keep last incomplete line
+
+          for (const line of lines) {
+            if (!line.trim()) continue;
+            try {
+              const data = JSON.parse(line);
+              if (data.response) {
+                outputBox.textContent += data.response;
+                tokenCount++;
+                updateStats();
+              }
+              if (data.done) {
+                break;
+              }
+            } catch (e) {
+              console.error(e);
+            }
+          }
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          outputBox.textContent += '\n[Stream Error: ' + err.message + ']';
+        }
+      } finally {
+        cursor.style.display = 'none';
+        btnGen.disabled = false;
+        btnStop.disabled = true;
+        abortController = null;
+        updateTelemetry();
+      }
+    }
+
+    function stopGeneration() {
+      if (abortController) {
+        abortController.abort();
+      }
+    }
+
+    function updateStats() {
+      const elapsed = (performance.now() - startTime) / 1000;
+      const tps = tokenCount / Math.max(0.001, elapsed);
+
+      document.getElementById('tpsGauge').textContent = tps.toFixed(1);
+      document.getElementById('tokenCounter').textContent = tokenCount;
+      document.getElementById('footerTokens').textContent = 'Tokens: ' + tokenCount;
+      document.getElementById('footerLatency').textContent = 'Latency: ' + (elapsed * 1000).toFixed(0) + ' ms';
+      document.getElementById('footerTps').textContent = 'Speed: ' + tps.toFixed(2) + ' tok/s';
+    }
+
+    async function updateTelemetry() {
+      try {
+        const res = await fetch('/api/telemetry');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.peak_tps > 0) {
+            document.getElementById('peakTps').textContent = data.peak_tps.toFixed(1);
+          }
+          if (data.active_mode) {
+            document.getElementById('modeBadge').textContent = '⚡ ' + data.active_mode.toUpperCase() + ' MODE';
+          }
+        }
+      } catch (e) {}
+    }
+
+    setInterval(updateTelemetry, 5000);
+    updateTelemetry();
+  </script>
+</body>
+</html>
