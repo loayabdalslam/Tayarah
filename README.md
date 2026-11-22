@@ -154,21 +154,6 @@ Tayarah/
 └── requirements.txt                  # Python dependencies
 ```
 
----
-
-## 📺 Benchmark Video Demonstration (1080p Full HD)
-
-The official benchmark video tests and compares **all models available on this machine**:
-
-![Tayarah vs Ollama Live Execution](file:///c:/Work/Synatraspace/Tayarah/assets/tayarah_benchmark_screenshot.png)
-
-![Tayarah Multi-Model Matrix](file:///c:/Work/Synatraspace/Tayarah/assets/tayarah_multi_model_matrix.png)
-
-* **Video file:** [tayarah_vs_ollama_benchmark.mp4](file:///c:/Work/Synatraspace/Tayarah/assets/tayarah_vs_ollama_benchmark.mp4) (Full HD 1080p, 30 FPS).
-* **Generator script:** Run `assets\make_video.bat` or `python assets\generate_comparison_video.py`.
-* **Breakdown:**
-  * **Part 1 (0:00 - 0:08):** Live side-by-side terminal generation on the flagship 7.5B model. Ollama is trapped at **3.93 tok/s** while Tayarah completes in **1.05s at 173.47 tok/s** (20.52x faster).
-  * **Part 2 (0:08 - 0:17):** Complete system benchmark matrix evaluated across all 7 models installed on this machine, reaching an average speedup of **22.4×**!
 
 ---
 
