@@ -7,8 +7,13 @@
 [![Peak CPU](https://img.shields.io/badge/Peak_CPU_Throughput-173.47_tok%2Fs-critical.svg)](#)
 [![Peak GPU](https://img.shields.io/badge/Peak_GPU_Verification-1%2C043.58_tok%2Fs-success.svg)](#)
 
+
 > **"Tayarah (طيارة)"** is a revolutionary high-performance LLM runtime designed to shatter the fundamental memory bandwidth bottleneck that plagues conventional LLM runtimes (such as Ollama, vLLM, and llama.cpp).  
 > Powered by **`racore/The1`** Inductive Neuro-Symbolic World Model (created by Loai Abdalslam) and Vectorized Parallel Verification (AVX2 SIMD on CPU + Tensor Cores on GPU).
+
+
+https://github.com/user-attachments/assets/5ca01224-af33-4829-96a0-ad1a194ed60b
+
 
 ---
 
